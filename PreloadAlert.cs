@@ -35,12 +35,12 @@ namespace PreloadAlert
         private bool essencefound;
         private readonly List<long> filesPtr = new List<long>();
         private bool foundSpecificPerandusChest;
-        private bool holdKey = false;
-        private bool isAreaChanged = false;
+        // private bool holdKey = false;
+        // private bool isAreaChanged = false;
         private bool isLoading;
         private Vector2 lastLine;
         private float maxWidth;
-        private Dictionary<string, PreloadConfigLine> personalAlertStrings;
+        // private Dictionary<string, PreloadConfigLine> personalAlertStrings;
         private readonly List<string> PreloadDebug = new List<string>();
         private Action PreloadDebugAction;
         private bool working;
@@ -50,7 +50,7 @@ namespace PreloadAlert
             Order = -40;
         }
 
-        private Dictionary<string, PreloadConfigLine> alerts { get; } = new Dictionary<string, PreloadConfigLine>();
+        private Dictionary<string, PreloadConfigLine> Alerts { get; } = new Dictionary<string, PreloadConfigLine>();
         private Action<string, Color> AddPreload => ExternalPreloads;
 
         //Need more test because different result with old method. Most of diff its Art/ and others but sometimes see Metadata/parti...Probably async loads
@@ -86,7 +86,7 @@ namespace PreloadAlert
 
                     lock (_locker)
                     {
-                        DrawAlerts = alerts.OrderBy(x => x.Value.Text).Select(x => x.Value).ToList();
+                        DrawAlerts = Alerts.OrderBy(x => x.Value.Text).Select(x => x.Value).ToList();
                     }
                 });
 
@@ -169,7 +169,7 @@ namespace PreloadAlert
 
                     ImGui.Separator();
 
-                    if (alerts.Count > 0)
+                    if (Alerts.Count > 0)
                     {
                         if (ImGui.TreeNode("DrawAlerts"))
                         {
@@ -207,22 +207,22 @@ namespace PreloadAlert
 
                     if (!working && tries < 20)
                     {
-                        alerts.Add(text, new PreloadConfigLine {Text = text, FastColor = () => color});
+                        Alerts.Add(text, new PreloadConfigLine {Text = text, FastColor = () => color});
 
                         lock (_locker)
                         {
-                            DrawAlerts = alerts.OrderBy(x => x.Value.Text).Select(x => x.Value).ToList();
+                            DrawAlerts = Alerts.OrderBy(x => x.Value.Text).Select(x => x.Value).ToList();
                         }
                     }
                 });
             }
             else
             {
-                alerts.Add(text, new PreloadConfigLine {Text = text, FastColor = () => color});
+                Alerts.Add(text, new PreloadConfigLine {Text = text, FastColor = () => color});
 
                 lock (_locker)
                 {
-                    DrawAlerts = alerts.OrderBy(x => x.Value.Text).Select(x => x.Value).ToList();
+                    DrawAlerts = Alerts.OrderBy(x => x.Value.Text).Select(x => x.Value).ToList();
                 }
             }
         }
@@ -258,7 +258,7 @@ namespace PreloadAlert
         public override void AreaChange(AreaInstance area)
         {
             isLoading = true;
-            alerts.Clear();
+            Alerts.Clear();
 
             lock (_locker)
             {
@@ -315,7 +315,7 @@ namespace PreloadAlert
 
                         lock (_locker)
                         {
-                            DrawAlerts = alerts.OrderBy(x => x.Value.Text).Select(x => x.Value).ToList();
+                            DrawAlerts = Alerts.OrderBy(x => x.Value.Text).Select(x => x.Value).ToList();
                         }
                     });
 
@@ -775,7 +775,7 @@ namespace PreloadAlert
             {
                 lock (_locker)
                 {
-                    alerts[alertStrings[text].Text] = alertStrings[text];
+                    Alerts[alertStrings[text].Text] = alertStrings[text];
                 }
 
                 return;
@@ -794,7 +794,7 @@ namespace PreloadAlert
                     // not using corrupted titles, so throw it in a preload alert
                     lock (_locker)
                     {
-                        alerts[text] = new PreloadConfigLine {Text = "Corrupted Area", FastColor = () => Settings.CorruptedAreaColor};
+                        Alerts[text] = new PreloadConfigLine {Text = "Corrupted Area", FastColor = () => Settings.CorruptedAreaColor};
                     }
                 }
 
@@ -810,19 +810,19 @@ namespace PreloadAlert
                 {
                     essencefound = true;
 
-                    if (alerts.ContainsKey("Remnant of Corruption"))
+                    if (Alerts.ContainsKey("Remnant of Corruption"))
 
                         //TODO: TEST ESSENCE
                     {
                         lock (_locker)
                         {
-                            alerts.Remove("Remnant of Corruption");
+                            Alerts.Remove("Remnant of Corruption");
                         }
                     }
 
                     lock (_locker)
                     {
-                        alerts[essence_alert.Text] = essence_alert;
+                        Alerts[essence_alert.Text] = essence_alert;
                     }
 
                     return;
@@ -832,7 +832,7 @@ namespace PreloadAlert
                 {
                     lock (_locker)
                     {
-                        alerts["Remnant of Corruption"] = new PreloadConfigLine
+                        Alerts["Remnant of Corruption"] = new PreloadConfigLine
                         {
                             Text = "Remnant of Corruption", FastColor = () => Settings.RemnantOfCorruption
                         };
@@ -847,17 +847,17 @@ namespace PreloadAlert
             {
                 foundSpecificPerandusChest = true;
 
-                if (alerts.ContainsKey("Unknown Perandus Chest"))
+                if (Alerts.ContainsKey("Unknown Perandus Chest"))
                 {
                     lock (_locker)
                     {
-                        alerts.Remove("Unknown Perandus Chest");
+                        Alerts.Remove("Unknown Perandus Chest");
                     }
                 }
 
                 lock (_locker)
                 {
-                    alerts.Add(perandus_alert.Text, perandus_alert);
+                    Alerts.Add(perandus_alert.Text, perandus_alert);
                 }
 
                 return;
@@ -867,7 +867,7 @@ namespace PreloadAlert
             {
                 lock (_locker)
                 {
-                    alerts["Unknown Perandus Chest"] = new PreloadConfigLine
+                    Alerts["Unknown Perandus Chest"] = new PreloadConfigLine
                     {
                         Text = "Unknown Perandus Chest", FastColor = () => Settings.PerandusChestStandard
                     };
@@ -881,7 +881,7 @@ namespace PreloadAlert
             {
                 lock (_locker)
                 {
-                    alerts[_alert.Text] = _alert;
+                    Alerts[_alert.Text] = _alert;
                 }
 
                 return;
@@ -894,7 +894,7 @@ namespace PreloadAlert
             {
                 lock (_locker)
                 {
-                    alerts[alert.Text] = alert;
+                    Alerts[alert.Text] = alert;
                 }
             }
         }
