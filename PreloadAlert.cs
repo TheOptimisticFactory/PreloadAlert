@@ -290,7 +290,7 @@ namespace PreloadAlert
                         {
                             var memory = GameController.Memory;
                             FilesFromMemory filesFromMemory = new FilesFromMemory(memory);
-                            var AllFiles = filesFromMemory.GetAllFilesSync();
+                            var AllFiles = filesFromMemory.GetAllFiles();
                             int areaChangeCount = GameController.Game.AreaChangeCount;
                             foreach (var file in AllFiles)
                             {
